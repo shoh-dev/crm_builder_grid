@@ -32,27 +32,23 @@ class _ExampleAppState extends State<ExampleApp> {
     ),
   ];
 
-  PlutoRow buildRow(UserModel model) {
-    return PlutoRow.fromJson(model.toJson());
-  }
-
   Future<PlutoLazyPaginationResponse> onFetch(
       PlutoLazyPaginationRequest req, PlutoGridStateManager sm) async {
     final page = req.page;
-    const pageSize = 10;
+    final pageSize = sm.pageSize;
     final sortColumn = req.sortColumn;
     final bool isAscending =
         sortColumn != null ? sortColumn.sort.isAscending : true;
     final String? sortColumnField = sortColumn?.field;
-    final search = req.filterRows.firstOrNull?.cells['value']?.value ?? "";
+    final search = req.filterValue ?? "";
 
     final queryParams = {
       "skip": page * pageSize, //same as page but in skip format
       "limit": pageSize,
       "q": search,
-      "select": "firstName,age,email",
-      "sortBy": "$sortColumnField",
+      "select": sm.columns.map((col) => col.field).join(","),
       "order": isAscending ? "asc" : "desc",
+      "sortBy": sortColumnField,
     };
 
     final dio = Dio(BaseOptions(baseUrl: 'https://dummyjson.com'));
@@ -68,7 +64,7 @@ class _ExampleAppState extends State<ExampleApp> {
       final users = data.map((e) => UserModel.fromJson(e)).toList();
 
       return PlutoLazyPaginationResponse(
-        rows: users.map(buildRow).toList(),
+        rows: users.map((user) => PlutoRow.fromJson(user.toJson())).toList(),
         totalPage: totalPages,
       );
     } else {
