@@ -8,7 +8,7 @@ class DefaultAsyncTableWidget extends StatelessWidget {
     required this.columns,
     this.rows,
     this.onLoaded,
-    this.fetch,
+    required this.fetch,
     this.showSearchWidget = true,
   });
 
@@ -16,7 +16,7 @@ class DefaultAsyncTableWidget extends StatelessWidget {
   final List<PlutoRow>? rows;
   final PlutoOnLoadedEventCallback? onLoaded;
   final Future<PlutoLazyPaginationResponse> Function(
-      PlutoLazyPaginationRequest, PlutoGridStateManager sm)? fetch;
+      PlutoLazyPaginationRequest, PlutoGridStateManager) fetch;
   final bool showSearchWidget;
 
   @override
@@ -71,18 +71,17 @@ class DefaultAsyncTableWidget extends StatelessWidget {
             autoSizeMode: PlutoAutoSizeMode.scale,
           ),
         ),
-        createFooter: fetch != null
-            ? (stateManager) {
-                return PlutoLazyPagination(
-                  fetch: (p0) => fetch!(p0, stateManager),
-                  stateManager: stateManager,
-                );
-              }
-            : null,
+        createFooter: (stateManager) {
+          return PlutoLazyPagination(
+            fetch: (p0) => fetch(p0, stateManager),
+            stateManager: stateManager,
+          );
+        },
         createHeader: (stateManager) {
           return SizedBox(
             height: 48,
             child: AppBar(
+              centerTitle: false,
               title: showSearchWidget
                   ? DefaultTableFilterWidget(stateManager: stateManager)
                   : null,
