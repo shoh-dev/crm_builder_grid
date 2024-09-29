@@ -1,0 +1,23 @@
+name: crm_builder_grid
+description: "A new Flutter package project."
+version: 0.0.1
+publish_to: "none"
+homepage:
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  pluto_grid:
+    path: pluto_grid
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
