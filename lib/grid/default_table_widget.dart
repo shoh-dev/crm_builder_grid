@@ -1,3 +1,5 @@
+import 'package:crm_builder_grid/grid/default_table_filter_widget.dart';
+import 'package:crm_builder_grid/utils/helpers/table_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
@@ -27,8 +29,10 @@ class DefaultTableWidget extends StatelessWidget {
         e.enableDropToResize = false;
         e.backgroundColor = Colors.grey[300];
         return e;
-      }).toList(),
-      rows: rows ?? List.empty(growable: true),
+      }).toList()
+        ..insert(0, searchColumn()),
+      rows: rows?.map((row) => row.withSearchCell()).toList() ??
+          List.empty(growable: true),
       onLoaded: onLoaded,
       mode: PlutoGridMode.readOnly,
       noRowsWidget: const Center(child: Text("Empty!")),
@@ -63,7 +67,15 @@ class DefaultTableWidget extends StatelessWidget {
           autoSizeMode: PlutoAutoSizeMode.scale,
         ),
       ),
-      createHeader: headerWidget,
+      createHeader: headerWidget ??
+          (stateManager) {
+            return SizedBox(
+              height: 48,
+              child: AppBar(
+                  centerTitle: false,
+                  title: DefaultTableFilterWidget(stateManager: stateManager)),
+            );
+          },
       createFooter: footerWidget,
     );
   }

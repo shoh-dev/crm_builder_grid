@@ -18,7 +18,17 @@ extension PlutoColumnRendererHelper on PlutoColumnRendererContext {
   }
 }
 
-extension PlutoLazyPaginationHelper on PlutoLazyPaginationRequest {
+extension PlutoAsyncPaginationHelper on PlutoLazyPaginationRequest {
+  String? get filterValue {
+    try {
+      return filterRows.firstOrNull?.cells['value']?.value;
+    } catch (e) {
+      return null;
+    }
+  }
+}
+
+extension PlutoInfinityScrollHelper on PlutoInfinityScrollRowsRequest {
   String? get filterValue {
     try {
       return filterRows.firstOrNull?.cells['value']?.value;
@@ -41,3 +51,22 @@ PlutoColumn actionColumn() {
     },
   );
 }
+
+PlutoCell searchCell(Map<String, PlutoCell> cells) {
+  return PlutoCell(value: cells.values.map((e) => e.value).join());
+}
+
+extension PlutoRowHelper on PlutoRow {
+  PlutoRow withSearchCell() {
+    cells["searchValues"] = searchCell(cells);
+    return this;
+  }
+}
+
+PlutoColumn searchColumn() => PlutoColumn(
+      title: "",
+      field: "searchValues",
+      type: PlutoColumnType.text(),
+      width: 0,
+      minWidth: 0,
+    );
