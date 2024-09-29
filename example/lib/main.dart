@@ -43,7 +43,9 @@ class _ExampleAppState extends State<ExampleApp> {
     final search = req.filterValue ?? "";
 
     final queryParams = {
-      "skip": page * pageSize, //same as page but in skip format
+      "skip": search.isNotEmpty
+          ? 0
+          : page * pageSize, //same as page but in skip format
       "limit": pageSize,
       "q": search,
       "select": sm.columns.map((col) => col.field).join(","),
@@ -82,7 +84,7 @@ class _ExampleAppState extends State<ExampleApp> {
         appBar: AppBar(
           title: const Text('CRM Builder Grid Example App'),
         ),
-        body: DefaultAsyncTableWidget(
+        body: DefaultAsyncPaginatedTableWidget(
           columns: columns,
           fetch: onFetch,
         ),

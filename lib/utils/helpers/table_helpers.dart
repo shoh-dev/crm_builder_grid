@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
 extension PlutoColumnRendererHelper on PlutoColumnRendererContext {
@@ -25,4 +26,18 @@ extension PlutoLazyPaginationHelper on PlutoLazyPaginationRequest {
       return null;
     }
   }
+}
+
+PlutoColumn actionColumn() {
+  return PlutoColumn(
+    title: "Action",
+    field: "action",
+    minWidth: 60,
+    enableSorting: false,
+    enableFilterMenuItem: false,
+    type: PlutoColumnType.text(),
+    renderer: (rendererContext) {
+      return IconButton(onPressed: null, icon: Icon(Icons.more_vert));
+    },
+  );
 }
